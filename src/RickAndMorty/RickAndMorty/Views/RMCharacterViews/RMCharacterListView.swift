@@ -49,6 +49,8 @@ final class RMCharacterListView: UIView {
         
         spinner.startAnimating()
         
+        viewModel.delegate = self
+        
         viewModel.fetchCharacters()
         
         setUpCollectionView()
@@ -87,5 +89,12 @@ final class RMCharacterListView: UIView {
                 self.collectionView.alpha = 1
             }
         })
+    }
+}
+
+
+extension RMCharacterListView: RMCharacterListViewViewModelDelegate {
+    func didLoadInitialCharacters() {
+        collectionView.reloadData()
     }
 }
