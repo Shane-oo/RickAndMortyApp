@@ -90,7 +90,7 @@ final class RMCharacterCollectionViewCell: UICollectionViewCell {
         statusLabel.text = nil
     }
     
-    /// set up layer again when chaning light mode i.e. dark to light mode
+    /// set up layer again when changing light mode i.e. dark to light mode
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
         setUpLayer()

@@ -8,7 +8,7 @@
 import UIKit
 
 /// Controller to show and search for characters
-final class RMCharacterViewController: UIViewController {
+final class RMCharacterViewController: UIViewController, RMCharacterListViewDelegate {
 
     private let characterListView = RMCharacterListView()
     
@@ -17,6 +17,14 @@ final class RMCharacterViewController: UIViewController {
         
         view.backgroundColor = .systemBackground
         title = "Characters"
+        setUpView()
+        
+        
+        
+    }
+    
+    private func setUpView(){
+        characterListView.delegate = self
         view.addSubview(characterListView)
         
         // pin this view to the top, left, right and bottom
@@ -34,8 +42,13 @@ final class RMCharacterViewController: UIViewController {
                 equalTo: view.safeAreaLayoutGuide.bottomAnchor
             )
         ])
-        
-        
+    }
+    
+    // MARK: - RMCharacterListViewDelegate
+    
+    func rmCharacterListView(_ characterListView: RMCharacterListView,
+                             didSelectCharacter character: RMCharacterModel) {
+        // Open detail controller for that character
     }
 
 }
