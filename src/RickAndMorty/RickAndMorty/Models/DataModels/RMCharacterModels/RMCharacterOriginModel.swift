@@ -1,5 +1,5 @@
 //
-//  RMLocation.swift
+//  RMOriginModel.swift
 //  RickAndMorty
 //
 //  Created by Shane Monck on 2/7/2023.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct RMCharacterLocation: Codable {
+struct RMCharacterOriginModel: Codable {
     let name: String
     let url: String
 }
