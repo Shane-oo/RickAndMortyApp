@@ -9,7 +9,7 @@ import Foundation
 
 
 /// Object that represents a single API Request
-final class RMRequest {
+final class RMRequestBuilder {
     
     /// API Contants
     private struct Constants {
