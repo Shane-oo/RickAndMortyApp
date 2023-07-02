@@ -95,7 +95,7 @@ extension RMCharacterListViewViewModel: UICollectionViewDataSource {
                         viewForSupplementaryElementOfKind kind: String,
                         at indexPath: IndexPath) -> UICollectionReusableView {
         guard kind == UICollectionView.elementKindSectionFooter else {
-            return UICollectionReusableView()
+            fatalError("Unsupported")
         }
         
         let footer = collectionView.dequeueReusableSupplementaryView(
@@ -110,6 +110,10 @@ extension RMCharacterListViewViewModel: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         referenceSizeForFooterInSection section: Int) -> CGSize {
+        guard shouldShowLoadMoreIndicator else {
+            return .zero
+        }
+        
         return CGSize(width: collectionView.frame.width, height: 100)
     }
 }
