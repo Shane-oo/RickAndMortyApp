@@ -7,6 +7,8 @@
 
 import UIKit
 
+
+/// Controller to house tabs and root tab controllers
 final class RMTabBarViewController: UITabBarController {
 
     override func viewDidLoad() {
@@ -44,12 +46,11 @@ final class RMTabBarViewController: UITabBarController {
                                        image: UIImage(systemName: "videoprojector"),
                                        tag: 3)
         nav4.tabBarItem = UITabBarItem(title: "Settings",
-                                       image: UIImage(systemName: "gearshape.2.fill"),
+                                       image: UIImage(systemName: "gearshape.2"),
                                        tag: 4)
         // make titles large
         for nav in [nav1, nav2, nav3, nav4] {
             nav.navigationBar.prefersLargeTitles = true
-            
         }
         
         setViewControllers([nav1, nav2, nav3, nav4],
