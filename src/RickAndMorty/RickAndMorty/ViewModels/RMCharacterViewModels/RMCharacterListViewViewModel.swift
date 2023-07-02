@@ -8,8 +8,21 @@
 import UIKit
 
 final class RMCharacterListViewViewModel: NSObject {
-    func fetchCharacters() {
-        RMService.shared.execute(.listCharactersRequests, expecting: RMGetAllCharactersResponseModel.self) { result in
+    private var characters: [RMCharacterModel] = [] {
+        didSet {
+            for character in characters {
+                let viewModel = RMCharacterCollectionViewCellViewModel(
+                    characterName: character.name,
+                    characterStatus: character.status,
+                    characterImageUrl: URL(string: character.image))
+                
+                cellViewModels.append(viewModel)
+            }
+        }
+    }
+    
+    private var cellViewModels: [RMCharacterCollectionViewCellViewModel] = []
+    
             switch result {
             case .success(let model):
                 print("Total: " + String(model.info.count))
@@ -24,7 +37,7 @@ final class RMCharacterListViewViewModel: NSObject {
 extension RMCharacterListViewViewModel: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView,
                         numberOfItemsInSection section: Int) -> Int {
-        return 20
+        return cellViewModels.count
     }
     
     func collectionView(_ collectionView: UICollectionView,
@@ -36,12 +49,7 @@ extension RMCharacterListViewViewModel: UICollectionViewDataSource {
             fatalError("Unsupported cell")
         }
         
-        let viewModel = RMCharacterCollectionViewCellViewModel(
-            characterName: "Shane Monck",
-            characterStatus: RMCharacterStatusModel.alive,
-            characterImageUrl: URL(string: "https://rickandmortyapi.com/api/character/avatar/2.jpeg")
-        )
-        
+        let viewModel = cellViewModels[indexPath.row]
         cell.configure(with: viewModel)
         
         return cell
