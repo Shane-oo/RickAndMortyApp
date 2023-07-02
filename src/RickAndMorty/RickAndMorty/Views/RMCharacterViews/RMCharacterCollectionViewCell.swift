@@ -13,7 +13,8 @@ final class RMCharacterCollectionViewCell: UICollectionViewCell {
     
     private let imageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.contentMode = .scaleAspectFit
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
@@ -43,6 +44,7 @@ final class RMCharacterCollectionViewCell: UICollectionViewCell {
         contentView.backgroundColor = .secondarySystemBackground
         contentView.addSubviews(imageView, nameLabel, statusLabel)
         addConstraints()
+        setUpLayer()
     }
     
     required init?(coder: NSCoder) {
@@ -73,11 +75,25 @@ final class RMCharacterCollectionViewCell: UICollectionViewCell {
         ])
     }
     
+    private func setUpLayer(){
+        contentView.layer.cornerRadius = 8
+        contentView.layer.shadowColor = UIColor.label.cgColor
+        contentView.layer.cornerRadius = 4
+        contentView.layer.shadowOffset = CGSize(width: -4, height: 4)
+        contentView.layer.shadowOpacity = 0.3
+    }
+    
     override func prepareForReuse() {
         super.prepareForReuse()
         imageView.image = nil
         nameLabel.text = nil
         statusLabel.text = nil
+    }
+    
+    /// set up layer again when chaning light mode i.e. dark to light mode
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        setUpLayer()
     }
     
     public func configure(with viewModel: RMCharacterCollectionViewCellViewModel){
