@@ -32,7 +32,7 @@ final class RMCharacterViewController: UIViewController {
             ),
             characterListView.bottomAnchor.constraint(
                 equalTo: view.safeAreaLayoutGuide.bottomAnchor
-            ),
+            )
         ])
         
         
