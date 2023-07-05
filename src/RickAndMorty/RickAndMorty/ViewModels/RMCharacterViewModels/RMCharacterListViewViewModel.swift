@@ -9,7 +9,10 @@ import UIKit
 
 protocol RMCharacterListViewViewModelDelegate: AnyObject {
     func didLoadInitialCharacters()
+    func didLoadMoreCharacters(with newIndexPaths: [IndexPath])
+    
     func didSelectCharacter(_ character: RMCharacterModel)
+
 }
 
 
@@ -19,6 +22,7 @@ final class RMCharacterListViewViewModel: NSObject {
     public weak var delegate: RMCharacterListViewViewModelDelegate?
     
     private var isLoadingMoreCharacters = false
+    private var isRefreshingCharacters = false
     
     private var characters: [RMCharacterModel] = [] {
         didSet {
@@ -27,8 +31,9 @@ final class RMCharacterListViewViewModel: NSObject {
                     characterName: character.name,
                     characterStatus: character.status,
                     characterImageUrl: URL(string: character.image))
-                
-                cellViewModels.append(viewModel)
+                if(!cellViewModels.contains(viewModel)){
+                    cellViewModels.append(viewModel)
+                }
             }
         }
     }
@@ -36,11 +41,22 @@ final class RMCharacterListViewViewModel: NSObject {
     private var cellViewModels: [RMCharacterCollectionViewCellViewModel] = []
     
     private var apiInfo: RMGetAllCharactersResponseModel.Info? = nil
+   
+    private var nextPage = 1
     
-    /// Fetch Initial set of characters (count: 20)
+    public var charactersRequest : RMRequestBuilder {
+        return RMRequestBuilder(endpoint: .character,
+                               queryParameters:[
+                                 URLQueryItem(
+                                     name: "page",
+                                     value: String(nextPage))]
+                                )
+    }
+    
     public func fetchCharacters() {
+        
         RMService.shared.execute(
-            .listCharactersRequests,
+            charactersRequest,
             expecting: RMGetAllCharactersResponseModel.self
         ) { [weak self] result in
             switch result {
@@ -49,6 +65,7 @@ final class RMCharacterListViewViewModel: NSObject {
                 let info = responseModel.info
                 self?.characters = results
                 self?.apiInfo = info
+                self?.nextPage += 1
                 DispatchQueue.main.async {
                     self?.delegate?.didLoadInitialCharacters()
                 }
@@ -59,12 +76,53 @@ final class RMCharacterListViewViewModel: NSObject {
     }
     
     
-    /// Paginate if additional characters are needed
+    /// Fetch more characters if we have not reached the max pages
     public func fetchAdditionalCharacters() {
         isLoadingMoreCharacters = true
+        if(nextPage != apiInfo?.pages){
+            print("fetching more characters nextpage=\(nextPage)")
 
-        //todo get more characters
+            RMService.shared.execute(
+                charactersRequest,
+                expecting: RMGetAllCharactersResponseModel.self) { [weak self] result in
+                    switch result {
+                    case .success(let responseModel):
+                        self?.nextPage += 1
+                        
+                        let originalCount = self?.characters.count ?? 0
+                        let newCount = responseModel.results.count
+                        let total = originalCount + newCount
+                        let startingIndex = total - newCount
+                        
+                        let indexPathsToAdd: [IndexPath] = Array(
+                            startingIndex..<(startingIndex + newCount)
+                        ).compactMap({
+                            return IndexPath(row: $0, section: 0)
+                        })
+
+                        // make sure to append before didLoadMoreCharacters
+                        // that insertItems
+                        self?.characters.append(contentsOf: responseModel.results)
+
+                        DispatchQueue.main.async {
+                            // inform collection View to update cells
+                            self?.delegate?.didLoadMoreCharacters(
+                                with: indexPathsToAdd
+                            )
+                            self?.isLoadingMoreCharacters = false
+                        }
+                    case .failure(let failure):
+                        print(String(describing: failure))
+                        self?.isLoadingMoreCharacters = false
+                    }
+                    
+                }
+        }
+        // else {
+        // remove loader as there is no more data
+        //}
     }
+
     
     
     public var shouldShowLoadMoreIndicator: Bool {
@@ -150,19 +208,35 @@ extension RMCharacterListViewViewModel: UICollectionViewDelegateFlowLayout {
 // MARK: - ScrollView
 extension RMCharacterListViewViewModel: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        //
-        guard shouldShowLoadMoreIndicator, !isLoadingMoreCharacters else {
+
+        guard !cellViewModels.isEmpty else {
             return
         }
-        let offset = scrollView.contentOffset.y
-        let totalContentHeight = scrollView.contentSize.height
-        let totalScrollViewFixedHeight = scrollView.frame.size.height
         
-        // 120 = footer height + a lil bit (100 + 20)
-        if offset >= (totalContentHeight - totalScrollViewFixedHeight - 120) {
-            // should start fetching more, reached the bottom
+        let offsetY = scrollView.contentOffset.y
+        let contentHeight = scrollView.contentSize.height
+        let scrollViewHeight = scrollView.frame.size.height
+        
+        // Determine if the user is at the top and dragging to refresh
+        if offsetY < 0 && scrollView.isDragging && !isRefreshingCharacters {
+            print("User is at the top and dragging to refresh")
+            // Add your refresh logic here
+            // i dont have any
+            
+            // Set isRefreshing flag to true to prevent multiple refresh triggers
+            isRefreshingCharacters = true
+        }
+        
+        
+        // Determine if the user is at the bottom and dragging to load more data
+        if offsetY > 0 && offsetY > contentHeight - scrollViewHeight
+            && scrollView.isDragging && !isLoadingMoreCharacters {
+            print("User is at the bottom and dragging to load more data")
+            
+            // Add your load more data logic here
             fetchAdditionalCharacters()
         }
         
     }
+    
 }
