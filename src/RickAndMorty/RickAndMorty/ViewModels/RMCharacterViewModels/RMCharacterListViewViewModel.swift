@@ -80,8 +80,6 @@ final class RMCharacterListViewViewModel: NSObject {
     public func fetchAdditionalCharacters() {
         isLoadingMoreCharacters = true
         if(nextPage != apiInfo?.pages){
-            print("fetching more characters nextpage=\(nextPage)")
-
             RMService.shared.execute(
                 charactersRequest,
                 expecting: RMGetAllCharactersResponseModel.self) { [weak self] result in
@@ -231,7 +229,6 @@ extension RMCharacterListViewViewModel: UIScrollViewDelegate {
         // Determine if the user is at the bottom and dragging to load more data
         if offsetY > 0 && offsetY > contentHeight - scrollViewHeight
             && scrollView.isDragging && !isLoadingMoreCharacters {
-            print("User is at the bottom and dragging to load more data")
             
             // Add your load more data logic here
             fetchAdditionalCharacters()

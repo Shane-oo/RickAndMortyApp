@@ -40,6 +40,7 @@
 		84B0779C2A5163E8003C079D /* RMCharacterDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B0779B2A5163E8003C079D /* RMCharacterDetailView.swift */; };
 		84B0779E2A5163FB003C079D /* RMCharacterDetailViewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B0779D2A5163FB003C079D /* RMCharacterDetailViewViewModel.swift */; };
 		84B077A12A516B47003C079D /* RMFooterLoadingCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B077A02A516B47003C079D /* RMFooterLoadingCollectionReusableView.swift */; };
+		84B077A32A55847E003C079D /* RMImageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B077A22A55847E003C079D /* RMImageManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -97,6 +98,7 @@
 		84B0779B2A5163E8003C079D /* RMCharacterDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RMCharacterDetailView.swift; sourceTree = "<group>"; };
 		84B0779D2A5163FB003C079D /* RMCharacterDetailViewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RMCharacterDetailViewViewModel.swift; sourceTree = "<group>"; };
 		84B077A02A516B47003C079D /* RMFooterLoadingCollectionReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RMFooterLoadingCollectionReusableView.swift; sourceTree = "<group>"; };
+		84B077A22A55847E003C079D /* RMImageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RMImageManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -232,6 +234,7 @@
 		844367AC2A501E1B00A4FAA2 /* Managers */ = {
 			isa = PBXGroup;
 			children = (
+				84B077A22A55847E003C079D /* RMImageManager.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -504,6 +507,7 @@
 				84B077822A511D8C003C079D /* RMCharacterStatusModel.swift in Sources */,
 				84B077842A511DF6003C079D /* RMCharacterGenderModel.swift in Sources */,
 				844367B62A501EDE00A4FAA2 /* RMEpisodeModel.swift in Sources */,
+				84B077A32A55847E003C079D /* RMImageManager.swift in Sources */,
 				8443677C2A501C7500A4FAA2 /* RMTabBarViewController.swift in Sources */,
 				844367782A501C7500A4FAA2 /* AppDelegate.swift in Sources */,
 				84B077942A5143C5003C079D /* Extensions.swift in Sources */,
