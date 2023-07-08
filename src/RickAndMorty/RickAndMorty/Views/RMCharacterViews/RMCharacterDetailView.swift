@@ -16,12 +16,13 @@ class RMCharacterDetailView: UIView {
     public var collectionView: UICollectionView?
     
     
-    private var spinner: UIActivityIndicatorView {
-        let spinner = UIActivityIndicatorView(style: .large)
-        spinner.hidesWhenStopped = true
-        spinner.translatesAutoresizingMaskIntoConstraints = false
-        return spinner
-    }
+    private let spinner: UIActivityIndicatorView = {
+         let spinner = UIActivityIndicatorView(style: .large)
+         spinner.hidesWhenStopped = true
+         spinner.translatesAutoresizingMaskIntoConstraints = false
+         return spinner
+     }()
+
     
     // MARK: - Init
     
