@@ -39,7 +39,6 @@ final class RMCharacterCollectionViewCellViewModel: Hashable, Equatable {
 
     }
     
-    
     // MARK: - Hashable
     
     static func == (lhs: RMCharacterCollectionViewCellViewModel,

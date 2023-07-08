@@ -40,7 +40,7 @@ final class RMCharacterListViewViewModel: NSObject {
     
     private var cellViewModels: [RMCharacterCollectionViewCellViewModel] = []
     
-    private var apiInfo: RMGetAllCharactersResponseModel.Info? = nil
+    private var apiInfo: RMCharactersResponseModel.Info? = nil
    
     private var nextPage = 1
     
@@ -57,7 +57,7 @@ final class RMCharacterListViewViewModel: NSObject {
         
         RMService.shared.execute(
             charactersRequest,
-            expecting: RMGetAllCharactersResponseModel.self
+            expecting: RMCharactersResponseModel.self
         ) { [weak self] result in
             switch result {
             case .success(let responseModel):
@@ -82,7 +82,7 @@ final class RMCharacterListViewViewModel: NSObject {
         if(nextPage != apiInfo?.pages){
             RMService.shared.execute(
                 charactersRequest,
-                expecting: RMGetAllCharactersResponseModel.self) { [weak self] result in
+                expecting: RMCharactersResponseModel.self) { [weak self] result in
                     switch result {
                     case .success(let responseModel):
                         self?.nextPage += 1

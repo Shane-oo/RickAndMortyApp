@@ -54,12 +54,10 @@ final class RMRequestBuilder {
     public var url: URL? {
         return URL(string: urlString)
     }
-    
-    
+        
     /// Desired http method
     public let httpMethod = "GET"
 
-    
     /// Construct request
     /// - Parameters:
     ///   - endpoint: target endpoint
@@ -75,6 +73,3 @@ final class RMRequestBuilder {
     }
 }
 
-extension RMRequestBuilder {
-    static let listCharactersRequests = RMRequestBuilder(endpoint: .character)
-}
