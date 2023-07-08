@@ -1,5 +1,5 @@
 //
-//  RMCharacterDetailView.swift
+//  RMCharacterDetailsView.swift
 //  RickAndMorty
 //
 //  Created by Shane Monck on 2/7/2023.
@@ -9,13 +9,13 @@ import UIKit
 
 
 /// View for single character info
-class RMCharacterDetailView: UIView {
+class RMCharacterDetailsView: UIView {
     
     
     
     public var collectionView: UICollectionView?
     
-    private let viewModel: RMCharacterDetailViewViewModel
+    private let viewModel: RMCharacterDetailsViewViewModel
     
     private let spinner: UIActivityIndicatorView = {
         let spinner = UIActivityIndicatorView(style: .large)
@@ -27,7 +27,7 @@ class RMCharacterDetailView: UIView {
     
     // MARK: - Init
     
-    init(frame: CGRect, viewModel: RMCharacterDetailViewViewModel) {
+    init(frame: CGRect, viewModel: RMCharacterDetailsViewViewModel) {
         self.viewModel = viewModel
         super.init(frame: frame)
         translatesAutoresizingMaskIntoConstraints = false
@@ -69,8 +69,21 @@ class RMCharacterDetailView: UIView {
         let collectionView = UICollectionView(frame: .zero,
                                               collectionViewLayout: layout)
         
-        collectionView.register(UICollectionViewCell.self,
-                                forCellWithReuseIdentifier: "cell")
+        collectionView.register(
+            RMCharacterPhotoCollectionViewCell.self,
+            forCellWithReuseIdentifier:
+                RMCharacterPhotoCollectionViewCell.cellIdentifier
+        )
+        collectionView.register(
+            RMCharacterInfoCollectionViewCell.self,
+            forCellWithReuseIdentifier:
+                RMCharacterInfoCollectionViewCell.cellIdentifier
+        )
+        collectionView.register(
+            RMCharacterEpisodeCollectionViewCell.self,
+            forCellWithReuseIdentifier:
+                RMCharacterEpisodeCollectionViewCell.cellIdentifier
+        )
         
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         

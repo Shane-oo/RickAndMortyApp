@@ -10,15 +10,15 @@ import UIKit
 
 /// Controller to show info about single character
 final class RMCharacterDetailViewController: UIViewController {
-    private let detailView: RMCharacterDetailView
+    private let detailView: RMCharacterDetailsView
 
-    private let viewModel: RMCharacterDetailViewViewModel
+    private let viewModel: RMCharacterDetailsViewViewModel
     
     // MARK: - Init
     
-    init(viewModel: RMCharacterDetailViewViewModel){
+    init(viewModel: RMCharacterDetailsViewViewModel){
         self.viewModel = viewModel
-        self.detailView = RMCharacterDetailView(frame: .zero,
+        self.detailView = RMCharacterDetailsView(frame: .zero,
                                                 viewModel: viewModel)
 
         super.init(nibName: nil, bundle: nil)
@@ -85,35 +85,63 @@ extension RMCharacterDetailViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView,
                         numberOfItemsInSection section: Int)
     -> Int {
-        switch section {
-        case 0:
+        let sectionType = viewModel.sections[section]
+        switch sectionType {
+            
+        case .photo:
             return 1
-        case 1:
-            return 8
-        case 2:
-            return 20
-        default:
-            return 1
+        case .information(viewModels: let viewModels):
+            return viewModels.count
+        case .episodes(viewModels: let viewModels):
+            return viewModels.count
         }
+
     }
     
     
     func collectionView(_ collectionView: UICollectionView,
                         cellForItemAt indexPath: IndexPath)
     -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: "cell",
-            for: indexPath)
-        if indexPath.section == 0 {
+        
+        let sectionType = viewModel.sections[indexPath.section]
+        switch sectionType {
+            
+        case .photo(viewModel: let viewModel):
+            guard  let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: RMCharacterPhotoCollectionViewCell.cellIdentifier,
+                for: indexPath)
+                    as? RMCharacterPhotoCollectionViewCell else {
+                fatalError()
+            }
+            cell.configure(with: viewModel)
             cell.backgroundColor = .systemPink
-        }
-        else if indexPath.section == 1 {
+
+            return cell
+        case .information(viewModels: let viewModels):
+            guard  let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: RMCharacterInfoCollectionViewCell.cellIdentifier,
+                for: indexPath)
+                    as? RMCharacterInfoCollectionViewCell else {
+                fatalError()
+            }
+            
+            cell.configure(with: viewModels[indexPath.row])
             cell.backgroundColor = .systemBrown
-        }
-        else {
+
+            return cell
+        case .episodes(viewModels: let viewModels):
+            guard  let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: RMCharacterEpisodeCollectionViewCell.cellIdentifier,
+                for: indexPath)
+                    as? RMCharacterEpisodeCollectionViewCell else {
+                fatalError()
+            }
+            cell.configure(with: viewModels[indexPath.row])
             cell.backgroundColor = .magenta
+
+            return cell
         }
         
-        return cell
+        
     }
 }

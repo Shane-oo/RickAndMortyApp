@@ -1,5 +1,5 @@
 //
-//  RMCharacterDetailViewViewModel.swift
+//  RMCharacterDetailsViewViewModel.swift
 //  RickAndMorty
 //
 //  Created by Shane Monck on 2/7/2023.
@@ -8,21 +8,34 @@
 import Foundation
 import UIKit
 
-final class RMCharacterDetailViewViewModel {
+final class RMCharacterDetailsViewViewModel {
     private let character: RMCharacterModel
     
-    enum SectionType: CaseIterable {
-        case photo
-        case information
-        case episodes
+    enum SectionType {
+        case photo(viewModel: RMCharacterPhotoCollectionViewCellViewModel)
+        case information(viewModels: [RMCharacterInfoCollectionViewCellViewModel])
+        case episodes(viewModels: [RMCharacterEpisodeCollectionViewCellViewModel])
     }
     
-    public let sections = SectionType.allCases
+    public var sections: [SectionType] = []
     
     // MARK: - Init
     
     init(character: RMCharacterModel) {
         self.character = character
+        setUpSections()
+    }
+    
+    private func setUpSections(){
+        sections = [
+            .photo(viewModel: .init()),
+            .information(viewModels: [
+                .init(),.init(),.init(),.init()
+            ]),
+            .episodes(viewModels: [
+                .init(),.init(),.init()
+            ])
+        ]
     }
     
     
@@ -31,6 +44,7 @@ final class RMCharacterDetailViewViewModel {
     }
     
     // MARK: - Layouts
+
     // First section
     public func createPhotoSectionLayout() -> NSCollectionLayoutSection {
         let item = NSCollectionLayoutItem(
