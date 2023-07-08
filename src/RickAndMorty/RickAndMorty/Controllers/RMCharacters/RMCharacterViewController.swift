@@ -50,14 +50,9 @@ final class RMCharacterViewController: UIViewController, RMCharacterListViewDele
                              didSelectCharacter character: RMCharacterModel) {
         // Open detail controller for that character
         let viewModel = RMCharacterDetailViewViewModel(character: character)
-        
-        let detailViewController = RMCharacterDetailViewController(
-            viewModel: viewModel
-        )
-        
-        detailViewController.navigationItem.largeTitleDisplayMode = .never
-        
-        navigationController?.pushViewController(detailViewController, animated: true)
+        let detailVC = RMCharacterDetailViewController(viewModel: viewModel)
+        detailVC.navigationItem.largeTitleDisplayMode = .never
+        navigationController?.pushViewController(detailVC, animated: true)
         
     }
 

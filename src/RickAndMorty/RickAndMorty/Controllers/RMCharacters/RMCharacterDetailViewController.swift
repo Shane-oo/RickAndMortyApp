@@ -41,6 +41,9 @@ final class RMCharacterDetailViewController: UIViewController {
         )
         
         addConstraints()
+        
+        detailView.collectionView?.delegate = self
+        detailView.collectionView?.dataSource = self
     }
 
     
@@ -60,4 +63,32 @@ final class RMCharacterDetailViewController: UIViewController {
         ])
     }
 
+}
+
+// adding UICollectionViewDelegate and UIcollectionViewDataSouce in controller
+// instead of view model where it is for charactersList
+// I will determine which one i like
+
+// MARK: - CollectionView
+extension RMCharacterDetailViewController: UICollectionViewDelegate {
+    
+}
+
+extension RMCharacterDetailViewController: UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView,
+                        numberOfItemsInSection section: Int)
+    -> Int {
+        return 20
+    }
+    
+    
+    func collectionView(_ collectionView: UICollectionView,
+                        cellForItemAt indexPath: IndexPath)
+    -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(
+            withReuseIdentifier: "cell",
+            for: indexPath)
+        cell.backgroundColor = .systemPink
+        return cell
+    }
 }

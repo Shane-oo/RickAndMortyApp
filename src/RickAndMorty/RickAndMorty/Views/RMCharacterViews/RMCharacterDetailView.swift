@@ -11,7 +11,10 @@ import UIKit
 /// View for single character info
 class RMCharacterDetailView: UIView {
     
-    private var collectionView: UICollectionView?
+    
+    
+    public var collectionView: UICollectionView?
+    
     
     private var spinner: UIActivityIndicatorView {
         let spinner = UIActivityIndicatorView(style: .large)
@@ -25,7 +28,7 @@ class RMCharacterDetailView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         translatesAutoresizingMaskIntoConstraints = false
-        backgroundColor = .systemMint
+        backgroundColor = .systemBackground
         let collectionView = createCollectionView()
         self.collectionView = collectionView
         addSubviews(collectionView,spinner)
@@ -36,20 +39,21 @@ class RMCharacterDetailView: UIView {
         fatalError("Unsupported")
     }
     
-    private func addConstraints(){
+    private func addConstraints() {
         guard let collectionView = collectionView else {
             return
         }
+
         NSLayoutConstraint.activate([
             spinner.widthAnchor.constraint(equalToConstant: 100),
             spinner.heightAnchor.constraint(equalToConstant: 100),
             spinner.centerXAnchor.constraint(equalTo: centerXAnchor),
             spinner.centerYAnchor.constraint(equalTo: centerYAnchor),
-            
+
             collectionView.topAnchor.constraint(equalTo: topAnchor),
             collectionView.leftAnchor.constraint(equalTo: leftAnchor),
             collectionView.rightAnchor.constraint(equalTo: rightAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: bottomAnchor)
+            collectionView.bottomAnchor.constraint(equalTo: bottomAnchor),
         ])
     }
     
@@ -64,11 +68,37 @@ class RMCharacterDetailView: UIView {
         
         collectionView.register(UICollectionViewCell.self,
                                 forCellWithReuseIdentifier: "cell")
+        
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        
         return collectionView
     }
     
     private func createSection(for sectionIndex: Int)
     -> NSCollectionLayoutSection {
+        let item = NSCollectionLayoutItem(
+            layoutSize: NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(1.0),
+                heightDimension: .fractionalHeight(1.0)
+            )
+        )
         
+        
+        item.contentInsets = NSDirectionalEdgeInsets(top: 0,
+                                                        leading: 0,
+                                                        bottom: 10,
+                                                        trailing: 0)
+        
+        let group = NSCollectionLayoutGroup.vertical(
+            layoutSize: NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(1.0),
+                heightDimension: .absolute(150)
+            ),
+            subitems: [item]
+        )
+        let section = NSCollectionLayoutSection(group: group)
+       
+        
+        return section
     }
 }
