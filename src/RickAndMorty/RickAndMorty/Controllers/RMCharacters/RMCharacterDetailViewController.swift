@@ -114,7 +114,6 @@ extension RMCharacterDetailViewController: UICollectionViewDataSource {
                 fatalError()
             }
             cell.configure(with: viewModel)
-            cell.backgroundColor = .systemPink
 
             return cell
         case .information(viewModels: let viewModels):
@@ -126,7 +125,6 @@ extension RMCharacterDetailViewController: UICollectionViewDataSource {
             }
             
             cell.configure(with: viewModels[indexPath.row])
-            cell.backgroundColor = .systemBrown
 
             return cell
         case .episodes(viewModels: let viewModels):
@@ -137,7 +135,6 @@ extension RMCharacterDetailViewController: UICollectionViewDataSource {
                 fatalError()
             }
             cell.configure(with: viewModels[indexPath.row])
-            cell.backgroundColor = .magenta
 
             return cell
         }
