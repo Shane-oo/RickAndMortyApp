@@ -15,6 +15,10 @@ final class RMCharacterPhotoCollectionViewCell: UICollectionViewCell {
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.layer.borderWidth = 8
+        imageView.layer.borderColor = .init(gray: 0.1, alpha: 100)
+        imageView.layer.cornerRadius = 8
+        imageView.layer.masksToBounds = true
         return imageView
     }()
     
