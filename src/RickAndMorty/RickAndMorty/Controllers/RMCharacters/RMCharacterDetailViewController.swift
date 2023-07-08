@@ -10,7 +10,7 @@ import UIKit
 
 /// Controller to show info about single character
 final class RMCharacterDetailViewController: UIViewController {
-    private let detailView = RMCharacterDetailView();
+    private let detailView: RMCharacterDetailView
 
     private let viewModel: RMCharacterDetailViewViewModel
     
@@ -18,6 +18,8 @@ final class RMCharacterDetailViewController: UIViewController {
     
     init(viewModel: RMCharacterDetailViewViewModel){
         self.viewModel = viewModel
+        self.detailView = RMCharacterDetailView(frame: .zero,
+                                                viewModel: viewModel)
 
         super.init(nibName: nil, bundle: nil)
     }
@@ -75,10 +77,15 @@ extension RMCharacterDetailViewController: UICollectionViewDelegate {
 }
 
 extension RMCharacterDetailViewController: UICollectionViewDataSource {
+    
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return viewModel.sections.count
+    }
+    
     func collectionView(_ collectionView: UICollectionView,
                         numberOfItemsInSection section: Int)
     -> Int {
-        return 20
+        return 10
     }
     
     
@@ -88,7 +95,16 @@ extension RMCharacterDetailViewController: UICollectionViewDataSource {
         let cell = collectionView.dequeueReusableCell(
             withReuseIdentifier: "cell",
             for: indexPath)
-        cell.backgroundColor = .systemPink
+        if indexPath.section == 0 {
+            cell.backgroundColor = .systemPink
+        }
+        else if indexPath.section == 1 {
+            cell.backgroundColor = .systemBrown
+        }
+        else {
+            cell.backgroundColor = .magenta
+        }
+        
         return cell
     }
 }
