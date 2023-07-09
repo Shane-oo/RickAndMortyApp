@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 final class RMCharacterDetailsViewViewModel {
-    private let character: RMCharacterModel
+    public let character: RMCharacterModel
     
     enum SectionType {
         case photo(viewModel: RMCharacterPhotoCollectionViewCellViewModel)
