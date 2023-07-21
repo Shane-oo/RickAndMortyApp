@@ -79,8 +79,10 @@ extension RMCharacterDetailViewController: UICollectionViewDelegate {
         case .photo, .information:
             break
         case .episodes:
+
             let episodes = self.viewModel.character.episode
             let selection = episodes[indexPath.row]
+
             let vc = RMEpisodeDetailsViewController(url: URL(string: selection))
             navigationController?.pushViewController(vc, animated: true)
             
