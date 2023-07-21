@@ -14,7 +14,9 @@ protocol RMEpisodeDataRender {
     var episode: String { get }
 }
 
-final class RMCharacterEpisodeCollectionViewCellViewModel {
+final class RMCharacterEpisodeCollectionViewCellViewModel: Hashable, Equatable {
+
+    
     private let episodeId: String
     
     private var isFetching = false
@@ -77,4 +79,11 @@ final class RMCharacterEpisodeCollectionViewCellViewModel {
         }
     }
     
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(self.episodeId)
+    }
+    
+    static func == (lhs: RMCharacterEpisodeCollectionViewCellViewModel, rhs: RMCharacterEpisodeCollectionViewCellViewModel) -> Bool {
+        return lhs.hashValue == rhs.hashValue
+    }
 }

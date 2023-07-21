@@ -1,36 +1,36 @@
 //
-//  RMCharacterListViewViewModel.swift
+//  RMEpisodeListViewViewModel.swift
 //  RickAndMorty
 //
-//  Created by Shane Monck on 2/7/2023.
+//  Created by Shane Monck on 21/7/2023.
 //
 
 import UIKit
 
-protocol RMCharacterListViewViewModelDelegate: AnyObject {
-    func didLoadInitialCharacters()
-    func didLoadMoreCharacters(with newIndexPaths: [IndexPath])
+protocol RMEpisodeListViewViewModelDelegate: AnyObject {
+    func didLoadInitialEpisodes()
+    func didLoadMoreEpisodes(with newIndexPaths: [IndexPath])
     
-    func didSelectCharacter(_ character: RMCharacterModel)
+    func didSelectEpisode(_ episode: RMEpisodeModel)
 
 }
 
 
-/// View Model to handle character list view logic
-final class RMCharacterListViewViewModel: NSObject {
+/// View Model to handle episode list view logic
+final class RMEpisodeListViewViewModel: NSObject {
     
-    public weak var delegate: RMCharacterListViewViewModelDelegate?
+    public weak var delegate: RMEpisodeListViewViewModelDelegate?
     
-    private var isLoadingMoreCharacters = false
-    private var isRefreshingCharacters = false
+    private var isLoadingMoreEpisodes = false
+
+    private var isRefreshingEpisodes = false
     
-    private var characters: [RMCharacterModel] = [] {
+    private var episodes: [RMEpisodeModel] = [] {
         didSet {
-            for character in characters {
-                let viewModel = RMCharacterCollectionViewCellViewModel(
-                    characterName: character.name,
-                    characterStatus: character.status,
-                    characterImageUrl: URL(string: character.image))
+            for episode in episodes {
+                let viewModel = RMCharacterEpisodeCollectionViewCellViewModel(
+                    episodeUrl: URL(string: episode.url)
+                )
                 if(!cellViewModels.contains(viewModel)){
                     cellViewModels.append(viewModel)
                 }
@@ -38,14 +38,15 @@ final class RMCharacterListViewViewModel: NSObject {
         }
     }
     
-    private var cellViewModels: [RMCharacterCollectionViewCellViewModel] = []
+    private var cellViewModels:
+    [RMCharacterEpisodeCollectionViewCellViewModel] = []
     
-    private var apiInfo: RMCharactersResponseModel.Info? = nil
+    private var apiInfo: RMEpisodesResponseModel.Info? = nil
    
     private var nextPage = 1
     
-    public var charactersRequest : RMRequestBuilder {
-        return RMRequestBuilder(endpoint: .character,
+    public var episodesRequest : RMRequestBuilder {
+        return RMRequestBuilder(endpoint: .episode,
                                queryParameters:[
                                  URLQueryItem(
                                      name: "page",
@@ -53,21 +54,21 @@ final class RMCharacterListViewViewModel: NSObject {
                                 )
     }
     
-    public func fetchCharacters() {
+    public func fetchEpisodes() {
         
         RMService.shared.execute(
-            charactersRequest,
-            expecting: RMCharactersResponseModel.self
+            episodesRequest,
+            expecting: RMEpisodesResponseModel.self
         ) { [weak self] result in
             switch result {
             case .success(let responseModel):
                 let results = responseModel.results
                 let info = responseModel.info
-                self?.characters = results
+                self?.episodes = results
                 self?.apiInfo = info
                 self?.nextPage += 1
                 DispatchQueue.main.async {
-                    self?.delegate?.didLoadInitialCharacters()
+                    self?.delegate?.didLoadInitialEpisodes()
                 }
             case .failure(let error):
                 print(String(describing: error))
@@ -76,42 +77,42 @@ final class RMCharacterListViewViewModel: NSObject {
     }
     
     
-    /// Fetch more characters if we have not reached the max pages
-    public func fetchAdditionalCharacters() {
-        isLoadingMoreCharacters = true
+    /// Fetch more episodes if we have not reached the max pages
+    public func fetchAdditionalEpisodes() {
+        isLoadingMoreEpisodes = true
         if(nextPage <= apiInfo!.pages){
             RMService.shared.execute(
-                charactersRequest,
-                expecting: RMCharactersResponseModel.self) { [weak self] result in
+                episodesRequest,
+                expecting: RMEpisodesResponseModel.self) { [weak self] result in
                     switch result {
                     case .success(let responseModel):
                         self?.nextPage += 1
-                        
-                        let originalCount = self?.characters.count ?? 0
+
+                        let originalCount = self?.episodes.count ?? 0
                         let newCount = responseModel.results.count
                         let total = originalCount + newCount
                         let startingIndex = total - newCount
-                        
+
                         let indexPathsToAdd: [IndexPath] = Array(
                             startingIndex..<(startingIndex + newCount)
                         ).compactMap({
                             return IndexPath(row: $0, section: 0)
                         })
 
-                        // make sure to append before didLoadMoreCharacters
+                        // make sure to append before didLoadMoreEpisodes
                         // that insertItems
-                        self?.characters.append(contentsOf: responseModel.results)
+                        self?.episodes.append(contentsOf: responseModel.results)
 
                         DispatchQueue.main.async {
                             // inform collection View to update cells
-                            self?.delegate?.didLoadMoreCharacters(
+                            self?.delegate?.didLoadMoreEpisodes(
                                 with: indexPathsToAdd
                             )
-                            self?.isLoadingMoreCharacters = false
+                            self?.isLoadingMoreEpisodes = false
                         }
                     case .failure(let failure):
                         print(String(describing: failure))
-                        self?.isLoadingMoreCharacters = false
+                        self?.isLoadingMoreEpisodes = false
                     }
                     
                 }
@@ -122,7 +123,6 @@ final class RMCharacterListViewViewModel: NSObject {
     }
 
     
-    
     public var shouldShowLoadMoreIndicator: Bool {
         return apiInfo?.next != nil
     }
@@ -130,7 +130,7 @@ final class RMCharacterListViewViewModel: NSObject {
 
 // MARK: - Collection View
 
-extension RMCharacterListViewViewModel: UICollectionViewDataSource {
+extension RMEpisodeListViewViewModel: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView,
                         numberOfItemsInSection section: Int) -> Int {
         return cellViewModels.count
@@ -139,9 +139,9 @@ extension RMCharacterListViewViewModel: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView,
                         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: RMCharacterCollectionViewCell.cellIdentifier,
+            withReuseIdentifier: RMCharacterEpisodeCollectionViewCell.cellIdentifier,
             for: indexPath
-        ) as? RMCharacterCollectionViewCell else {
+        ) as? RMCharacterEpisodeCollectionViewCell else {
             fatalError("Unsupported cell")
         }
         
@@ -179,7 +179,7 @@ extension RMCharacterListViewViewModel: UICollectionViewDataSource {
     }
 }
 
-extension RMCharacterListViewViewModel: UICollectionViewDelegate {
+extension RMEpisodeListViewViewModel: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -188,23 +188,23 @@ extension RMCharacterListViewViewModel: UICollectionViewDelegate {
         let width = (bounds.width - 30) / 2
         
         return CGSize(width: width,
-                      height: width * 1.5)
+                      height: width * 0.8)
     }
 }
 
-extension RMCharacterListViewViewModel: UICollectionViewDelegateFlowLayout {
+extension RMEpisodeListViewViewModel: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView,
                         didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: true)
         
-        let character = characters[indexPath.row]
+        let episode = episodes[indexPath.row]
         
-        delegate?.didSelectCharacter(character)
+        delegate?.didSelectEpisode(episode)
     }
 }
 
 // MARK: - ScrollView
-extension RMCharacterListViewViewModel: UIScrollViewDelegate {
+extension RMEpisodeListViewViewModel: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
 
         guard !cellViewModels.isEmpty else {
@@ -216,22 +216,22 @@ extension RMCharacterListViewViewModel: UIScrollViewDelegate {
         let scrollViewHeight = scrollView.frame.size.height
         
         // Determine if the user is at the top and dragging to refresh
-        if offsetY < 0 && scrollView.isDragging && !isRefreshingCharacters {
+        if offsetY < 0 && scrollView.isDragging && !isRefreshingEpisodes {
             print("User is at the top and dragging to refresh")
             // Add your refresh logic here
             // i dont have any
             
             // Set isRefreshing flag to true to prevent multiple refresh triggers
-            isRefreshingCharacters = true
+            isRefreshingEpisodes = true
         }
         
         
         // Determine if the user is at the bottom and dragging to load more data
         if offsetY > 0 && offsetY > contentHeight - scrollViewHeight
-            && scrollView.isDragging && !isLoadingMoreCharacters {
+            && scrollView.isDragging && !isLoadingMoreEpisodes {
             
             // Add your load more data logic here
-            fetchAdditionalCharacters()
+            fetchAdditionalEpisodes()
         }
         
     }
