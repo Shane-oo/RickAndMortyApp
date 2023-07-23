@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 // publish and subscribe pattern
 protocol RMEpisodeDataRender {
@@ -18,7 +19,7 @@ final class RMCharacterEpisodeCollectionViewCellViewModel: Hashable, Equatable {
 
     
     private let episodeId: String
-    
+        
     private var isFetching = false
     
     private var dataBlock: ((RMEpisodeDataRender) -> Void)?
@@ -36,14 +37,19 @@ final class RMCharacterEpisodeCollectionViewCellViewModel: Hashable, Equatable {
         return RMRequestBuilder(endpoint: .episode,
         pathComponents: [episodeId])
     }
+    
+    public let borderColor: UIColor
+
     // MARK: - Init
     
-    init (episodeUrl: URL?) {
+    init (episodeUrl: URL?, borderColor: UIColor = .systemBlue) {
         guard let episodeId = episodeUrl?.lastPathComponent else {
-            self.episodeId = ""
+            self.episodeId = "" // this is bad
+            self.borderColor = borderColor
             return
         }
         self.episodeId = episodeId
+        self.borderColor = borderColor
     }
     
     // MARK: - Public
