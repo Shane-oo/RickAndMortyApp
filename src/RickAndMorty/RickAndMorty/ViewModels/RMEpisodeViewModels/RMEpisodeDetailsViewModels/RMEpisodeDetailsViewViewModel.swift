@@ -22,14 +22,18 @@ final class RMEpisodeDetailsViewViewModel {
     
     public weak var delegate: RMEpisodeDetailsViewViewModelDelegate?
     
-
     
-
+    enum SectionType {
+        case information(viewModels: [RMEpisodeInfoCollectionViewCellViewModel])
+        case characters(viewModel: [RMCharacterCollectionViewCellViewModel])
+    }
     
-
+    public private(set) var sections: [SectionType] = []
+    
+    
     public var episodeRequest : RMRequestBuilder {
         return RMRequestBuilder(endpoint: .episode,
-        pathComponents: [episodeId])
+                                pathComponents: [episodeId])
     }
     
     // MARK: - Init
@@ -61,7 +65,7 @@ final class RMEpisodeDetailsViewViewModel {
     
     // Mark: - Private
     
-
+    
     
     private func fetchRelatedCharacters(episode: RMEpisodeModel) {
         let requests: [RMRequestBuilder] = episode.characters.compactMap({
